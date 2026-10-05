@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Biryani | Order Online</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff7ed;color:#24150e}
+header{background:#7a170d;color:#fff;padding:24px 16px;text-align:center}
+header h1{margin:0;font-size:34px}header p{margin:7px 0 0}
+.wrap{max-width:850px;margin:auto;padding:18px}
+.hero{background:#ffdf9e;border-radius:18px;padding:20px;margin-bottom:20px;text-align:center}
+.hero h2{margin:0 0 6px}.hero p{margin:0}
+h2{margin:10px 0 14px}.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:#fff;padding:17px;border-radius:16px;box-shadow:0 3px 14px #0001}
+.card h3{margin:0 0 8px}.price{font-size:19px;font-weight:bold;color:#b43a13}
+.add{width:100%;margin-top:12px;background:#198754;color:#fff;border:0;border-radius:10px;padding:11px;font-weight:bold;font-size:15px}
+.panel{background:#fff;padding:19px;border-radius:16px;margin-top:20px;box-shadow:0 3px 14px #0001}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #eee}
+.remove{border:0;background:#eee;border-radius:7px;padding:4px 8px;cursor:pointer}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:bold;padding-top:14px}
+label{display:block;font-weight:bold;font-size:14px;margin-top:10px}
+input,textarea{width:100%;padding:12px;margin-top:6px;border:1px solid #d9c9bb;border-radius:9px;font-size:16px}
+textarea{min-height:80px}
+.order{width:100%;border:0;border-radius:11px;background:#25d366;color:#073b1b;padding:14px;font-size:18px;font-weight:bold;margin-top:16px;cursor:pointer}
+.call{display:block;text-align:center;background:#7a170d;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:bold;margin-top:10px}
+.success{display:none;margin-top:14px;padding:12px;border-radius:10px;background:#d9f7df;color:#125c22}
+.empty{color:#777;text-align:center;padding:10px}
+footer{text-align:center;padding:25px;color:#75665c}
+</style>
+</head>
+<body>
+<header>
+<h1>🍛 Family Biryani</h1>
+<p>Hot • Fresh • Delicious</p>
+</header>
+
+<main class="wrap">
+<section class="hero">
+<h2>Order Your Favourite Biryani</h2>
+<p>Choose your food, enter your delivery details and send your order on WhatsApp.</p>
+</section>
+
+<h2>🍽️ Menu</h2>
+<div class="menu" id="menu"></div>
+
+<section class="panel">
+<h2>🛒 Your Order</h2>
+<div id="cart"><div class="empty">Add items from the menu.</div></div>
+<div class="total"><span>Total</span><span id="total">₹0</span></div>
+</section>
+
+<section class="panel">
+<h2>📍 Customer Details</h2>
+<form id="form">
+<label>Name</label>
+<input id="name" required placeholder="Enter your name">
+
+<label>Address</label>
+<textarea id="address" required placeholder="Enter delivery address"></textarea>
+
+<label>Building / Flat No. or House No.</label>
+<input id="house" required placeholder="Flat / House number">
+
+<label>Mobile No.</label>
+<input id="mobile" required type="tel" placeholder="Mobile number">
+
+<button class="order" type="submit">📲 Send Order on WhatsApp</button>
+</form>
+<a class="call" href="tel:+918237019162">📞 Call Family Biryani: 8237019162</a>
+<div class="success" id="success"></div>
+</section>
+</main>
+
+<footer>Family Biryani • 8237019162</footer>
+
+<script>
+const PHONE="918237019162";
+const products=[
+["Chicken Biryani",190],
+["Chicken Dum Biryani",210],
+["Special Family Biryani",230],
+["Chicken Wings",200],
+["Coco Cola",20],
+["Thumbs Up",20],
+["Sprite",20]
+];
+let cart=[];
+
+const menu=document.getElementById("menu");
+products.forEach((p,i)=>{
+ const el=document.createElement("div");
+ el.className="card";
+ el.innerHTML=`<h3>${p[0]}</h3><div class="price">₹${p[1]}</div>
+ <button class="add" onclick="add(${i})">Add to Order</button>`;
+ menu.appendChild(el);
+});
+
+function add(i){cart.push(products[i]);render();}
+function removeItem(i){cart.splice(i,1);render();}
+function render(){
+ const box=document.getElementById("cart");
+ if(!cart.length){
+   box.innerHTML='<div class="empty">Add items from the menu.</div>';
+ }else{
+   box.innerHTML=cart.map((p,i)=>`
+   <div class="row"><span>${p[0]}</span>
+   <span>₹${p[1]} <button class="remove" onclick="removeItem(${i})">✕</button></span></div>`).join("");
+ }
+ document.getElementById("total").textContent="₹"+cart.reduce((s,p)=>s+p[1],0);
+}
+
+document.getElementById("form").addEventListener("submit",function(e){
+ e.preventDefault();
+ if(!cart.length){alert("Please add at least one item.");return;}
+ const n=document.getElementById("name").value.trim();
+ const a=document.getElementById("address").value.trim();
+ const h=document.getElementById("house").value.trim();
+ const m=document.getElementById("mobile").value.trim();
+ const total=cart.reduce((s,p)=>s+p[1],0);
+
+ let msg="🍛 FAMILY BIRYANI - NEW ORDER%0A%0A";
+ msg+="Customer: "+encodeURIComponent(n)+"%0A";
+ msg+="Mobile: "+encodeURIComponent(m)+"%0A";
+ msg+="Address: "+encodeURIComponent(a)+"%0A";
+ msg+="Flat/House: "+encodeURIComponent(h)+"%0A%0A";
+ msg+="ORDER:%0A";
+ cart.forEach(p=>msg+="• "+encodeURIComponent(p[0])+" - ₹"+p[1]+"%0A");
+ msg+="%0A💰 TOTAL: ₹"+total;
+
+ const url="https://wa.me/"+PHONE+"?text="+msg;
+ document.getElementById("success").style.display="block";
+ document.getElementById("success").textContent="Opening WhatsApp with your order…";
+ window.open(url,"_blank");
+});
+</script>
+</body>
+</html>
